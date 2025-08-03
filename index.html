@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#418943">
-    <meta name="description" content="Personalized nutrition plans by Dt. Shreya - Expert nutritional thera    <form id="appointment-form" action="https://formsubmit.co/divyansh8065@gmail.com" method="POST" enctype="multipart/form-data">
+    <meta name="description" content="Personalized nutrition plans by Dt. Shreya - Expert nutritional thera    <fo    <form id="appointment-form" action="https://formsubmit.co/divyansh8065@gmail.com" method="POST" enctype="multipart/form-data">
+        <!-- FormSubmit configuration -->
+        <input type="hidden" name="_subject" value="New Appointment Request - Nutritional Therapy">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="box">
+        <input type="hidden" name="_autoresponse" value="Thank you for your appointment request! We will contact you within 24 hours to confirm your appointment.">
+        <input type="hidden" name="_cc" value="jhashambhavi1905@gmail.com">appointment-form" action="https://formsubmit.co/divyansh8065@gmail.com" method="POST" enctype="multipart/form-data">
         <!-- FormSubmit configuration -->
         <input type="hidden" name="_next" value="https://nutritionwithshreya.netlify.app/thank-you.html">
         <input type="hidden" name="_subject" value="New Appointment Request - Nutritional Therapy">
@@ -744,6 +750,84 @@ function showCopyMessage(message) {
             }
         }, 300);
     }, 3000);
+}
+
+// Form submission handler for cross-domain compatibility
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appointment-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Add current domain's thank you page to the form
+            const currentDomain = window.location.origin;
+            
+            // Create or update the _next hidden input
+            let nextInput = form.querySelector('input[name="_next"]');
+            if (!nextInput) {
+                nextInput = document.createElement('input');
+                nextInput.type = 'hidden';
+                nextInput.name = '_next';
+                form.appendChild(nextInput);
+            }
+            
+            // Set the thank you page URL based on current domain
+            if (currentDomain.includes('thank-you.html')) {
+                nextInput.value = currentDomain + '/thank-you.html';
+            } else {
+                // Fallback: create a simple thank you URL parameter
+                nextInput.value = currentDomain + '/?submitted=true';
+            }
+        });
+    }
+    
+    // Check if form was submitted (for domains without thank-you.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('submitted') === 'true') {
+        showThankYouMessage();
+    }
+});
+
+// Function to show thank you message on the same page
+function showThankYouMessage() {
+    // Create thank you overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    `;
+    
+    modal.innerHTML = `
+        <div style="color: #4caf50; font-size: 48px; margin-bottom: 20px;">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 style="color: #333; margin-bottom: 15px;">Thank You!</h2>
+        <p style="color: #666; margin-bottom: 25px;">Your appointment request has been submitted successfully. We will contact you within 24 hours to confirm your appointment.</p>
+        <button onclick="this.parentElement.parentElement.remove(); window.history.replaceState({}, document.title, window.location.pathname);" 
+                style="background: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px;">
+            Close
+        </button>
+    `;
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
 }
 
 // filepath: c:\Users\jhash\Documents\Nutritionist\index.html
