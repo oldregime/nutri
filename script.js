@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (appointmentForm) {
         appointmentForm.addEventListener('submit', function(e) {
-            // Don't prevent default as we want the form to submit to Formspree
+            // Don't prevent default as we want the form to submit to Web3Forms
             // But we still want to validate before submission
 
             // Basic form validation
@@ -37,12 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const problem = document.getElementById('problem').value;
-            const recommendation = document.getElementById('recommendation').value;
             const preferredDate = document.getElementById('preferred-date').value;
             const preferredTime = document.getElementById('preferred-time').value;
 
             // Check if required fields are filled
-            if (!name || !age || !gender || !email || !phone || !problem || !recommendation || !preferredDate || !preferredTime) {
+            if (!name || !age || !gender || !email || !phone || !problem || !preferredDate || !preferredTime) {
                 e.preventDefault(); // Prevent form submission if validation fails
                 alert('Please fill in all required fields.');
                 return;
@@ -73,28 +72,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Payment proof validation
             const paymentFile = document.getElementById('payment-proof').files[0];
-            const transactionId = document.getElementById('transaction-id').value;
 
-            if (!paymentFile && !transactionId) {
+            if (!paymentFile) {
                 e.preventDefault();
-                alert('Please either upload payment screenshot or enter transaction ID.');
+                alert('Please upload payment proof to proceed.');
                 return;
             }
 
-            // If using transaction ID, validate its format (basic validation)
-            if (!paymentFile && transactionId) {
-                if (transactionId.length < 8) {
-                    e.preventDefault();
-                    alert('Please enter a valid transaction ID.');
-                    return;
-                }
-            }
-
-            // If validation passes, the form will submit to Formspree
-            // Formspree will handle the data and redirect to the thank you page
+            // If validation passes, the form will submit to Web3Forms
+            // Web3Forms will handle the data and redirect to the thank you page
 
             // Log for debugging
-            console.log('Form validated and submitting to Formspree');
+            console.log('Form validated and submitting to Web3Forms');
         });
     }
 
@@ -115,17 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Check file type - allow images, PDFs, and documents
+        // Check file type - allow images and PDFs
         const validTypes = [
             'image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp',
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            'application/pdf'
         ];
         
         if (!validTypes.includes(paymentProof.files[0].type)) {
             e.preventDefault();
-            alert('Please upload a valid file (JPG, PNG, GIF, PDF, DOC, DOCX)');
+            alert('Please upload a valid file (JPG, PNG, GIF, PDF)');
             return;
         }
     });
