@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#418943">
-    <meta name="description" content="Personalized nutrition plans by Dt. Shreya - Expert nutritional therapy and diet consultation">
+    <meta name="description" content="Personalized nutrition plans by Dt. Shreya - Expert nutritional thera    <form id="appointment-form" action="https://formsubmit.co/divyansh8065@gmail.com" method="POST" enctype="multipart/form-data">
+        <!-- FormSubmit configuration -->
+        <input type="hidden" name="_next" value="https://nutritionwithshreya.netlify.app/thank-you.html">
+        <input type="hidden" name="_subject" value="New Appointment Request - Nutritional Therapy">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="box">
+        <input type="hidden" name="_autoresponse" value="Thank you for your appointment request! We will contact you within 24 hours to confirm your appointment.">
+        <input type="hidden" name="_cc" value="jhashambhavi1905@gmail.com">"diet consultation">
     <meta name="keywords" content="nutritionist, diet plan, nutrition therapy, Dt. Shreya, health consultant">
     <link rel="icon" type="image/png" href="images/leaf-logo.png">
     <title>Nutritional Therapy by Dt. Shreya</title>
@@ -414,20 +421,35 @@
                     <span class="amount">₹599</span>
                 </div>
                 <div class="payment-options">
-                    <!-- Updated UPI link with proper formatting -->
-                    <a href="upi://pay?pa=shreya022055@oksbi&pn=Dt.Shreya&am=599&cu=INR&tn=Nutritional Therapy Consultation" 
+                    <!-- QR Code download button -->
+                    <a href="#" 
                        class="upi-link" 
-                       target="_blank">
-                        <i class="fas fa-mobile-alt"></i>
-                        Pay via UPI
+                       onclick="downloadQRCode(event)">
+                        <i class="fas fa-qrcode"></i>
+                        Download QR
                     </a>
                     <!-- Alternate payment button for mobile -->
-                    <a href="shreya022055@oksbi" 
+                    <a href="#" 
                        class="upi-id-copy" 
                        onclick="copyUPIId(event)">
                         <i class="fas fa-copy"></i>
                         Copy UPI ID
                     </a>
+                    <!-- View QR button -->
+                    <a href="#" 
+                       class="view-qr-btn" 
+                       onclick="toggleQRView(event)">
+                        <i class="fas fa-eye"></i>
+                        View QR
+                    </a>
+                </div>
+                
+                <!-- QR Code display area (initially hidden) -->
+                <div id="qr-display" class="qr-display-container" style="display: none;">
+                    <div class="qr-image-wrapper">
+                        <img src="images/Screenshot_1754212238234.png" alt="Payment QR Code" class="qr-display-image">
+                        <p class="qr-instructions">Scan this QR code with any UPI app to make payment</p>
+                    </div>
                 </div>
             </div>
             <div class="payment-note">
@@ -440,10 +462,10 @@
         </div>
         <div class="form-group">
             <label for="payment-proof">Upload Payment Proof* (Image, PDF, or Screenshot)</label>
-            <input type="file" id="payment-proof" name="Payment Proof" accept="image/*,.pdf,.doc,.docx" required>
+            <input type="file" id="payment-proof" name="attachment" accept="image/*,.pdf" required>
             <div class="payment-required">
                 <i class="fas fa-info-circle"></i>
-                Accepted formats: JPG, PNG, GIF, PDF, DOC, DOCX (Max size: 10MB)
+                Accepted formats: JPG, PNG, GIF, PDF (Max size: 10MB)
             </div>
         </div>
 
@@ -598,6 +620,132 @@
 
     <script src="script.js"></script>
     <script>
+// Function to copy UPI ID to clipboard
+function copyUPIId(event) {
+    event.preventDefault();
+    const upiId = "shreya022055@oksbi";
+    
+    // Try to use the modern clipboard API
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(upiId).then(function() {
+            showCopyMessage("UPI ID copied to clipboard!");
+        }).catch(function() {
+            fallbackCopyTextToClipboard(upiId);
+        });
+    } else {
+        // Fallback for older browsers
+        fallbackCopyTextToClipboard(upiId);
+    }
+}
+
+// Function to download QR code
+function downloadQRCode(event) {
+    event.preventDefault();
+    
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = 'images/Screenshot_1754212238234.png';
+    link.download = 'Payment_QR_Code.png';
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show success message
+    showCopyMessage("QR Code downloaded successfully!");
+}
+
+// Function to toggle QR code display
+function toggleQRView(event) {
+    event.preventDefault();
+    
+    const qrDisplay = document.getElementById('qr-display');
+    const button = event.target.closest('.view-qr-btn');
+    const icon = button.querySelector('i');
+    const text = button.childNodes[2]; // Get the text node
+    
+    if (qrDisplay.style.display === 'none' || qrDisplay.style.display === '') {
+        // Show QR code
+        qrDisplay.style.display = 'block';
+        icon.className = 'fas fa-eye-slash';
+        text.textContent = ' Hide QR';
+        
+        // Smooth scroll to QR code
+        setTimeout(() => {
+            qrDisplay.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    } else {
+        // Hide QR code
+        qrDisplay.style.display = 'none';
+        icon.className = 'fas fa-eye';
+        text.textContent = ' View QR';
+    }
+}
+
+// Fallback copy function for older browsers
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showCopyMessage("UPI ID copied to clipboard!");
+    } catch (err) {
+        showCopyMessage("Failed to copy. Please copy manually: " + text);
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Function to show copy message
+function showCopyMessage(message) {
+    // Create or update existing message element
+    let messageEl = document.getElementById('copy-message');
+    if (!messageEl) {
+        messageEl = document.createElement('div');
+        messageEl.id = 'copy-message';
+        messageEl.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        `;
+        document.body.appendChild(messageEl);
+    }
+    
+    messageEl.textContent = message;
+    messageEl.style.opacity = '1';
+    messageEl.style.transform = 'translateY(0)';
+    
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        messageEl.style.opacity = '0';
+        messageEl.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+            if (messageEl && messageEl.parentNode) {
+                messageEl.parentNode.removeChild(messageEl);
+            }
+        }, 300);
+    }, 3000);
+}
+
 // filepath: c:\Users\jhash\Documents\Nutritionist\index.html
 // Simple in-memory slot tracking (replace with backend for real use)
 const scheduleData = [
@@ -733,6 +881,66 @@ renderDates();
 .payment-note i {
     color: #388e3c;
     margin-right: 6px;
+}
+.payment-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+.payment-options a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #4caf50;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.payment-options a:hover {
+    background: #388e3c;
+    transform: translateY(-1px);
+}
+.view-qr-btn {
+    background: #2196f3 !important;
+}
+.view-qr-btn:hover {
+    background: #1976d2 !important;
+}
+.qr-display-container {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.qr-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.qr-display-image {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(76,175,80,0.2);
+}
+.qr-instructions {
+    color: #555;
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 500;
 }
 .thank-you {
     color: #388e3c;
