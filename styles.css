@@ -1822,6 +1822,7 @@ footer:after {
     .footer-links, 
     .footer-contact {
         width: 100%;
+<<<<<<< HEAD
         text-align: center !important;
         margin-bottom: 20px;
         max-width: none;
@@ -1831,6 +1832,10 @@ footer:after {
     .footer-brand p {
         margin-left: 0 !important;
         text-align: center !important;
+=======
+        text-align: center;
+        margin-bottom: 20px;
+>>>>>>> d6bd2ce0a247a10cfdac8e6daa8c3b7e187c29f2
     }
     
     .footer-brand h2 {
@@ -1841,6 +1846,7 @@ footer:after {
         font-size: 1rem !important;
     }
     
+<<<<<<< HEAD
     .footer-links h3,
     .footer-contact h3 {
         font-size: 1.2rem !important;
@@ -1854,6 +1860,10 @@ footer:after {
     
     .social-links {
         justify-content: center !important;
+=======
+    .footer-links h3 {
+        font-size: 1.2rem !important;
+>>>>>>> d6bd2ce0a247a10cfdac8e6daa8c3b7e187c29f2
     }
     
     .footer-links ul li {
