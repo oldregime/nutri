@@ -1,5 +1,105 @@
 // Form validation and submission
 document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Navigation and Hide-on-Scroll Functionality
+    const header = document.querySelector('header');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    const navLinksItems = document.querySelectorAll('.nav-links a');
+    
+    let lastScrollTop = 0;
+    let isScrolling = false;
+    
+    // Mobile menu toggle
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            const icon = mobileMenuBtn.querySelector('i');
+            
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Close mobile menu when clicking on nav links
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('nav')) {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    }
+    
+    // Hide/Show navbar on scroll
+    function handleScroll() {
+        if (isScrolling) return;
+        
+        isScrolling = true;
+        requestAnimationFrame(() => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Only hide on mobile/tablet and when scrolling down past 100px
+            if (scrollTop > 100 && scrollTop > lastScrollTop) {
+                // Scrolling down - hide navbar
+                header.classList.add('nav-hidden');
+            } else if (scrollTop < lastScrollTop) {
+                // Scrolling up - show navbar
+                header.classList.remove('nav-hidden');
+            }
+            
+            // Always show navbar at top of page
+            if (scrollTop <= 50) {
+                header.classList.remove('nav-hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+            isScrolling = false;
+        });
+    }
+    
+    // Throttled scroll event listener
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = setTimeout(handleScroll, 10);
+    });
+    
+    // Smooth scrolling for navigation links
+    navLinksItems.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const headerHeight = header.offsetHeight;
+                const targetPosition = targetSection.offsetTop - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
     // Who I Serve dropdown functionality
     const dropdownToggle = document.querySelector('.dropdown-toggle');
     const whoIServe = document.querySelector('.who-i-serve');

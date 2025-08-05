@@ -19,6 +19,9 @@
                 <h1>Nutritional Therapy</h1>
                 <p class="subtitle">By Dt. Shreya</p>
             </div>
+            <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                <i class="fas fa-bars"></i>
+            </button>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -389,10 +392,9 @@
             <label for="preferred-time">Preferred Time*</label>
             <select id="preferred-time" name="Preferred Time" required>
                 <option value="">Select Time</option>
-                <option value="morning">Morning (9AM - 12PM)</option>
-                <option value="afternoon">Afternoon (12PM - 4PM)</option>
-                <option value="evening">Evening (4PM - 7PM)</option>
-                <option value="night">Night (7PM - 10PM)</option>
+                <option value="night">Night (7PM - 8PM)</option>
+                <option value="night">Night (8PM - 9PM)</option>
+                <option value="night">Night (9PM - 10PM)</option>
             </select>
         </div>
 
@@ -773,9 +775,9 @@ function renderTimeSlots() {
     const slotEntries = Object.entries(scheduleData[selectedDate].slots);
     slotEntries.forEach(([time, count]) => {
         const btn = document.createElement('button');
-        btn.textContent = `${time} (${5 - count} slots left)`;
+        btn.textContent = `${time} (${2 - count} slots left)`;
         btn.className = 'time-btn';
-        btn.disabled = count >= 5;
+        btn.disabled = count >= 2;
         btn.onclick = () => {
             selectedTime = time;
             renderTimeSlots();
@@ -788,7 +790,7 @@ function renderTimeSlots() {
 }
 document.getElementById('book-slot-btn').onclick = function() {
     if (selectedDate !== null && selectedTime) {
-        if (scheduleData[selectedDate].slots[selectedTime] < 5) {
+        if (scheduleData[selectedDate].slots[selectedTime] < 2) {
             scheduleData[selectedDate].slots[selectedTime]++;
             document.getElementById('booking-message').textContent = "Slot booked! (Demo only, not saved)";
             renderTimeSlots();
