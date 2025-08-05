@@ -343,64 +343,69 @@
     <div class="divider"></div>
     <form id="appointment-form" action="https://formsubmit.co/divyansh8065@gmail.com" method="POST" enctype="multipart/form-data">
         <!-- FormSubmit configuration -->
-        <input type="hidden" name="_next" value="https://testingnutri.netlify.app/thank-you.html">
-        <input type="hidden" name="_url" value="https://testingnutri.netlify.app/index.html">
+        <input type="hidden" name="_next" value="https://shreyanutricare.live/thank-you.html">
+        <input type="hidden" name="_url" value="https://shreyanutricare.live/index.html">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_subject" value="New Appointment Request - Nutritional Therapy">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="00_Service_Type" value="21-Days Personalized Meal Planning, Monitoring & Evaluation (₹599)">
+        <input type="hidden" name="00_Form_Source" value="Nutritional Therapy Website - shreyanutricare.live">
         
         <div class="form-group">
             <label for="name">Full Name*</label>
-            <input type="text" id="name" name="Full Name" required>
+            <input type="text" id="name" name="01_Full_Name" required>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="age">Age*</label>
-                <input type="number" id="age" name="Age" required min="1" max="120">
+                <input type="number" id="age" name="02_Age" required min="1" max="120">
             </div>
 
             <div class="form-group">
                 <label for="gender">Gender*</label>
-                <select id="gender" name="Gender" required>
+                <select id="gender" name="03_Gender" required>
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
             <label for="email">Email Address*</label>
-            <input type="email" id="email" name="Email Address" required>
+            <input type="email" id="email" name="04_Email_Address" required>
         </div>
 
         <div class="form-group">
             <label for="phone">Phone Number*</label>
-            <input type="tel" id="phone" name="Phone Number" required>
+            <input type="tel" id="phone" name="05_Phone_Number" required>
         </div>
 
         <div class="form-group">
             <label for="problem">Problem Statement*</label>
-            <textarea id="problem" name="Problem Statement" rows="4" required></textarea>
+            <textarea id="problem" name="06_Health_Concern_Problem_Statement" rows="4" required></textarea>
         </div>
 
         <div class="form-group">
             <label for="preferred-date">Preferred Date*</label>
-            <input type="date" id="preferred-date" name="Preferred Date" required>
+            <input type="date" id="preferred-date" name="07_Preferred_Appointment_Date" required>
         </div>
 
         <div class="form-group">
             <label for="preferred-time">Preferred Time*</label>
-            <select id="preferred-time" name="Preferred Time" required>
+            <select id="preferred-time" name="08_Preferred_Time_Slot" required>
                 <option value="">Select Time</option>
                 <option value="Night (7PM - 8PM)">Night (7PM - 8PM)</option>
                 <option value="Night (8PM - 9PM)">Night (8PM - 9PM)</option>
-                <option value="night (9PM - 10PM)">Night (9PM - 10PM)</option>
+                <option value="Night (9PM - 10PM)">Night (9PM - 10PM)</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="additional-notes">Additional Notes</label>
-            <textarea id="additional-notes" name="Additional Notes" rows="3"></textarea>
+            <textarea id="additional-notes" name="09_Additional_Notes_Comments" rows="3"></textarea>
         </div>
 
         <div class="payment-info-box">
@@ -455,7 +460,7 @@
         
         <div class="form-group">
             <label for="payment-proof">Upload Payment Proof* (Image, PDF, or Screenshot)</label>
-            <input type="file" id="payment-proof" name="attachment" accept="image/*,.pdf" required>
+            <input type="file" id="payment-proof" name="10_Payment_Proof_Screenshot" accept="image/*,.pdf" required>
             <div class="payment-required">
                 <i class="fas fa-info-circle"></i>
                 Accepted formats: JPG, PNG, GIF, PDF (Max size: 10MB)
