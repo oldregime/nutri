@@ -123,13 +123,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Services tabs functionality - Fix this section
+    const serviceTabs = document.querySelectorAll('.service-tab');
+    const serviceContents = document.querySelectorAll('.service-content');
+
+    serviceTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            console.log('Tab clicked:', tab.getAttribute('data-service')); // Debug log
+            
+            // Remove active class from all tabs
+            serviceTabs.forEach(t => t.classList.remove('active'));
+
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
+            // Hide all content sections
+            serviceContents.forEach(content => content.classList.remove('active'));
+
+            // Show the corresponding content section
+            const serviceId = tab.getAttribute('data-service');
+            const targetContent = document.getElementById(serviceId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+                console.log('Content shown:', serviceId); // Debug log
+            }
+
+            // Add a small animation to the icon
+            const icon = tab.querySelector('i');
+            if (icon) {
+                icon.classList.add('fa-bounce');
+                setTimeout(() => {
+                    icon.classList.remove('fa-bounce');
+                }, 500);
+            }
+        });
+    });
+
+    // FAQ accordion functionality - Fix this section
+    const faqQuestions = document.querySelectorAll('.faq-question');
+
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            console.log('FAQ clicked'); // Debug log
+            const faqItem = question.parentElement;
+
+            // Close all other FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Toggle the clicked FAQ item
+            faqItem.classList.toggle('active');
+        });
+    });
+
+    // Form validation and submission
     const appointmentForm = document.getElementById('appointment-form');
 
     if (appointmentForm) {
         appointmentForm.addEventListener('submit', function(e) {
-            // Don't prevent default as we want the form to submit to Web3Forms
-            // But we still want to validate before submission
-
             // Basic form validation
             const name = document.getElementById('name').value;
             const age = document.getElementById('age').value;
@@ -139,10 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const problem = document.getElementById('problem').value;
             const preferredDate = document.getElementById('preferred-date').value;
             const preferredTime = document.getElementById('preferred-time').value;
+            const paymentProof = document.getElementById('payment-proof');
 
             // Check if required fields are filled
             if (!name || !age || !gender || !email || !phone || !problem || !preferredDate || !preferredTime) {
-                e.preventDefault(); // Prevent form submission if validation fails
+                e.preventDefault();
                 alert('Please fill in all required fields.');
                 return;
             }
@@ -171,67 +226,52 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Payment proof validation
-            const paymentFile = document.getElementById('payment-proof').files[0];
-
-            if (!paymentFile) {
+            if (!paymentProof.files || paymentProof.files.length === 0) {
                 e.preventDefault();
                 alert('Please upload payment proof to proceed.');
                 return;
             }
 
-            // If validation passes, the form will submit to Web3Forms
-            // Web3Forms will handle the data and redirect to the thank you page
+            // Check file size (max 10MB)
+            if (paymentProof.files[0].size > 10 * 1024 * 1024) {
+                e.preventDefault();
+                alert('File size should be less than 10MB');
+                return;
+            }
 
-            // Log for debugging
-            console.log('Form validated and submitting to Web3Forms');
+            // Check file type - allow images and PDFs
+            const validTypes = [
+                'image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp',
+                'application/pdf'
+            ];
+            
+            if (!validTypes.includes(paymentProof.files[0].type)) {
+                e.preventDefault();
+                alert('Please upload a valid file (JPG, PNG, GIF, PDF)');
+                return;
+            }
+
+            // If validation passes, the form will submit to FormSubmit
+            console.log('Form validated and submitting to FormSubmit');
         });
     }
 
-    // Add form validation for payment proof
-    document.getElementById('appointment-form').addEventListener('submit', function(e) {
-        const paymentProof = document.getElementById('payment-proof');
-        
-        if (!paymentProof.files || paymentProof.files.length === 0) {
-            e.preventDefault();
-            alert('Please upload payment proof to proceed.');
-            return;
-        }
+    // Smooth scrolling for navigation and footer links
+    const allNavLinks = document.querySelectorAll('nav a, .hero a, .footer-links a');
 
-        // Check file size (max 10MB)
-        if (paymentProof.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('File size should be less than 10MB');
-            return;
-        }
-
-        // Check file type - allow images and PDFs
-        const validTypes = [
-            'image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp',
-            'application/pdf'
-        ];
-        
-        if (!validTypes.includes(paymentProof.files[0].type)) {
-            e.preventDefault();
-            alert('Please upload a valid file (JPG, PNG, GIF, PDF)');
-            return;
-        }
-    });
-
-    // Smooth scrolling for navigation links
-    const navLinks = document.querySelectorAll('nav a, .hero a');
-
-    navLinks.forEach(link => {
+    allNavLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
 
-            if (targetId.startsWith('#')) {
+            if (targetId && targetId.startsWith('#')) {
                 e.preventDefault();
 
                 const targetElement = document.querySelector(targetId);
 
                 if (targetElement) {
+                    const headerHeight = header ? header.offsetHeight : 80;
                     window.scrollTo({
-                        top: targetElement.offsetTop - 80,
+                        top: targetElement.offsetTop - headerHeight - 20,
                         behavior: 'smooth'
                     });
                 }
@@ -239,93 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add smooth scroll for footer links
-    const footerLinks = document.querySelectorAll('.footer-links a');
-
-    footerLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-
-            if (targetId.startsWith('#')) {
-                e.preventDefault();
-
-                const targetElement = document.querySelector(targetId);
-
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 60,
-                        behavior: 'smooth'
-                    });
-                }
-            }
-        });
-    });
-
-    // FAQ accordion functionality
-    const faqQuestions = document.querySelectorAll('.faq-question');
-
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', () => {
-            const faqItem = question.parentElement;
-
-            // Close all other FAQ items
-            document.querySelectorAll('.faq-item').forEach(item => {
-                if (item !== faqItem) {
-                    item.classList.remove('active');
-                }
-            });
-
-            // Toggle the clicked FAQ item
-            faqItem.classList.toggle('active');
-        });
-    });
-
-    // Services tabs functionality
-    const serviceTabs = document.querySelectorAll('.service-tab');
-    const serviceContents = document.querySelectorAll('.service-content');
-
-    serviceTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs
-            serviceTabs.forEach(t => t.classList.remove('active'));
-
-            // Add active class to clicked tab
-            tab.classList.add('active');
-
-            // Hide all content sections
-            serviceContents.forEach(content => content.classList.remove('active'));
-
-            // Show the corresponding content section
-            const serviceId = tab.getAttribute('data-service');
-            document.getElementById(serviceId).classList.add('active');
-
-            // Add a small animation to the icon
-            const icon = tab.querySelector('i');
-            icon.classList.add('fa-bounce');
-            setTimeout(() => {
-                icon.classList.remove('fa-bounce');
-            }, 500);
-        });
-    });
-
-    // Update copyright year
-    function updateCopyright() {
-        const currentYear = new Date().getFullYear();
-        const copyrightElement = document.querySelector('.footer-copyright p');
-        
-        if (copyrightElement) {
-            copyrightElement.innerHTML = `© ${currentYear} Nutritional Therapy by Dt. Shreya. All rights reserved.`;
-        }
-    }
-
-    // Call the function when DOM loads
-    document.addEventListener('DOMContentLoaded', updateCopyright);
-
-    // Initialize FAQ items - open the first one by default
-    const firstFaqItem = document.querySelector('.faq-item');
-    if (firstFaqItem) {
-        firstFaqItem.classList.add('active');
-    }
+    // Initialize FAQ items - Remove the first one being open by default
+    // This was causing issues with the functionality
 
     // Features slider functionality
     const featuresTrack = document.querySelector('.features-track');
@@ -333,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevButton = document.querySelector('.slider-arrow.prev');
     const nextButton = document.querySelector('.slider-arrow.next');
 
-    if (featuresTrack) {
+    if (featuresTrack && sliderDots) {
         const slides = featuresTrack.querySelectorAll('.feature-slide');
         let currentIndex = 0;
         const slidesToShow = Math.floor(featuresTrack.offsetWidth / 300);
@@ -365,14 +320,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Previous slide
-        prevButton.addEventListener('click', () => {
-            goToSlide(currentIndex - 1);
-        });
+        if (prevButton) {
+            prevButton.addEventListener('click', () => {
+                goToSlide(currentIndex - 1);
+            });
+        }
 
         // Next slide
-        nextButton.addEventListener('click', () => {
-            goToSlide(currentIndex + 1);
-        });
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                goToSlide(currentIndex + 1);
+            });
+        }
 
         // Handle scroll events
         featuresTrack.addEventListener('scroll', () => {
@@ -386,54 +345,106 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Animate thank you message on scroll
-    function handleThankYouMessage() {
-        const thankYouMessage = document.querySelector('.thank-you-message');
-        if (thankYouMessage) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        thankYouMessage.style.opacity = '1';
-                        thankYouMessage.style.transform = 'translateY(0)';
-                    }
-                });
-            }, { threshold: 0.5 });
+    const thankYouMessage = document.querySelector('.thank-you-message');
+    if (thankYouMessage) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    thankYouMessage.style.opacity = '1';
+                    thankYouMessage.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.5 });
 
-            observer.observe(thankYouMessage);
-        }
+        observer.observe(thankYouMessage);
     }
 
-    // Call the function when DOM loads
-    document.addEventListener('DOMContentLoaded', handleThankYouMessage);
-
-    // Add this function to your existing script
-    function copyUPIId(event) {
-        event.preventDefault();
-        const upiId = "shreya022055@oksbi";
-        navigator.clipboard.writeText(upiId).then(() => {
-            // Show feedback
-            const button = event.currentTarget;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> UPI ID Copied!';
-            button.style.background = '#4caf50';
-            button.style.color = 'white';
-            
-            // Reset after 2 seconds
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = '#f0fff4';
-                button.style.color = '#3e8e41';
-            }, 2000);
-        });
+    // Add touch device detection for UPI functionality
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
+    const upiLink = document.querySelector('.upi-link');
+    const upiIdCopy = document.querySelector('.upi-id-copy');
+    
+    if (isTouchDevice && upiLink && upiIdCopy) {
+        upiLink.style.display = 'none';
+        upiIdCopy.style.display = 'flex';
+    } else if (upiIdCopy) {
+        upiIdCopy.style.display = 'none';
     }
-
-    // Add touch device detection
-    document.addEventListener('DOMContentLoaded', function() {
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
-        if (isTouchDevice) {
-            document.querySelector('.upi-link').style.display = 'none';
-            document.querySelector('.upi-id-copy').style.display = 'flex';
-        } else {
-            document.querySelector('.upi-id-copy').style.display = 'none';
-        }
-    });
 });
+
+// UPI copy function (needs to be global for onclick handlers)
+function copyUPIId(event) {
+    event.preventDefault();
+    const upiId = "shreya022055@oksbi";
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(upiId).then(() => {
+            showCopyMessage("UPI ID copied to clipboard!");
+        }).catch(() => {
+            fallbackCopyTextToClipboard(upiId);
+        });
+    } else {
+        fallbackCopyTextToClipboard(upiId);
+    }
+}
+
+// Fallback copy function for older browsers
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showCopyMessage("UPI ID copied to clipboard!");
+    } catch (err) {
+        showCopyMessage("Failed to copy. Please copy manually: " + text);
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Function to show copy message
+function showCopyMessage(message) {
+    let messageEl = document.getElementById('copy-message');
+    if (!messageEl) {
+        messageEl = document.createElement('div');
+        messageEl.id = 'copy-message';
+        messageEl.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        `;
+        document.body.appendChild(messageEl);
+    }
+    
+    messageEl.textContent = message;
+    messageEl.style.opacity = '1';
+    messageEl.style.transform = 'translateY(0)';
+    
+    setTimeout(() => {
+        messageEl.style.opacity = '0';
+        messageEl.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+            if (messageEl && messageEl.parentNode) {
+                messageEl.parentNode.removeChild(messageEl);
+            }
+        }, 300);
+    }, 3000);
+}
